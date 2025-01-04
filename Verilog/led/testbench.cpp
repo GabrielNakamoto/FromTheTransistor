@@ -5,15 +5,13 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-// 1mhz 	=	1 million cycles per second
-// period	=	1 / 1 * 10^6 
-// 			=	1 * 10^-6
-//
-// 			/ 10^-12 = 10^-6 / 10^-12 = 10^12 / 10^6 = 10^6
 
-unsigned int time_ps = 0; // time in pico-seconds
+// 100khz = 100,000 cycles a second
+// therefore each cycle would be 10^-5 second
+// or 10 microseconds (10^-6 * 10)
 
-static constexpr double CLOCK_PERIOD = 10000; // in n-seconds?
+unsigned int time_us = 0;
+static constexpr double CLOCK_PERIOD = 10; // in micro-seconds
 
 int main(int argc, char **argv)
 {
@@ -26,27 +24,26 @@ int main(int argc, char **argv)
 	const std::unique_ptr<VerilatedVcdC> trace { new VerilatedVcdC };
 
 	// helpful -> https://github.com/verilator/verilator/issues/1937
-	// 1 ns = 10^-9 seconds
-	trace->spTrace()->set_time_unit("1ns");
-	trace->spTrace()->set_time_resolution("1ns");
+	// 1 us = 10^-6 seconds
+	trace->spTrace()->set_time_unit("1us");
+	trace->spTrace()->set_time_resolution("1us");
 
 	top->trace(trace.get(), 99);
 	trace->open("led_blink.vcd");
 
 	top->clk = 0;
 
-	// half a clock cycle
-	// lets run 100,000 cycles 3 times
-	// we want 100,000 cycles to be a second
-	// 100khz
-	// runs about 3 seconds
-	for (int i = 0; i < 600000; ++i)
+	// we want to run 4 seconds of simulated time
+	// @ 100khz, = 400,000 clock cycles
+	// each loop iteration is a clock tick / half a cycle
+	// so we run 800,000 times
+	for (int i = 0; i < 800000; ++i)
 	{
 		top->clk = !top->clk;
 		top->eval();
 
-		trace->dump(time_ps);
-		time_ps += CLOCK_PERIOD / 2;
+		trace->dump(time_us);
+		time_us += CLOCK_PERIOD / 2;
 	}
 
 	top->final();

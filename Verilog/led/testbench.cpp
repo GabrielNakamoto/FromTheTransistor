@@ -5,6 +5,12 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
+// 1mhz 	=	1 million cycles per second
+// period	=	1 / 1 * 10^6 
+// 			=	1 * 10^-6
+
+static constexpr int CLOCK_PERIOD = 1e-6; // in seconds
+
 int main(int argc, char **argv)
 {
 	Verilated::commandArgs(argc, argv);
@@ -19,16 +25,14 @@ int main(int argc, char **argv)
 
 	top->clk = 0;
 
-	int sim_time = 0;
 	for (int i = 0; i < 100000; ++i)
 	{
 		top->clk = !top->clk;
 		top->eval();
 
-		trace->dump(sim_time);
-		sim_time += 5;
+		trace->dump(i * CLOCK_PERIOD / 2);
 
-		Verilated::timeInc(5);
+		Verilated::timeInc(CLOCK_PERIOD / 2);
 	}
 
 	trace->close();

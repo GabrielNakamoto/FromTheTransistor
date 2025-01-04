@@ -1,0 +1,3 @@
+/home/raine/FromTheTransistor/Verilog/RAM/build/CMakeFiles/Vdmux4way.dir
+/home/raine/FromTheTransistor/Verilog/RAM/build/CMakeFiles/edit_cache.dir
+/home/raine/FromTheTransistor/Verilog/RAM/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/cmake;-E;env;VERILATOR_ROOT=/usr/local/share/verilator;/usr/local/share/verilator/bin/verilator_bin;--compiler;gcc;--prefix;Vram;--Mdir;/home/raine/FromTheTransistor/Verilog/RAM/build/CMakeFiles/Vdmux4way.dir/Vram.dir;--make;cmake;--top;dmux4way;--cc;-y;/home/raine/FromTheTransistor/Verilog/RAM;ram.v

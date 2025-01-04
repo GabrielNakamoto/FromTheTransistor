@@ -7,7 +7,9 @@ reg [31:0] counter; // 32 bit counter register
 
 // frequency
 // how many clock cycles to reset?
-parameter DIVISOR=25000000;
+//
+// we want led to flip every 100,000 cycles
+parameter DIVISOR=50000;
 // whenever clk is 1 this will execute
 always @(posedge clk) begin
 	// <= is a non blocking assignment

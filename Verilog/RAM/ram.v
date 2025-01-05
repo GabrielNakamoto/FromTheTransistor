@@ -1,7 +1,8 @@
-module dmux(a, b, in, sel);
-
-	input wire in, sel;
-	output wire a, b;
+module dmux(
+	output wire a, b,
+	input wire in,
+	input wire sel
+);
 
 	wire ns;
 
@@ -14,12 +15,11 @@ module dmux(a, b, in, sel);
 
 endmodule
 
-module dmux4way(a, b, c, d, in, sel);
-
-	input wire in;
-	input wire [1:0] sel;
-
-	output wire a, b, c, d;
+module dmux_4way(
+	output wire a, b, c, d,
+	input wire in,
+	input wire [1:0] sel
+);
 
 	wire h1, h2; // half 1 / 2 ([a,b] vs [c,d])
 
@@ -45,13 +45,11 @@ module dmux4way(a, b, c, d, in, sel);
 endmodule
 
 
-module dmux8way(a, b, c, d, e, f, g, h, in, sel);
-
-	input wire in;
-	input wire [2:0] sel;
-
-	output wire a, b, c, d, e, f, g, h;
-
+module dmux_8way(
+	output wire a, b, c, d, e, f, g, h,
+	input wire in,
+	input wire [2:0] sel
+);
 	// distribute between first halfs, then use dmux4ways
 
 	wire h1, h2;
@@ -62,7 +60,7 @@ module dmux8way(a, b, c, d, e, f, g, h, in, sel);
 		.a(h1),
 		.b(h2));
 
-	dmux4way d2(
+	dmux_4way d2(
 		.in(h1),
 		.sel(sel[1:0]),
 		.a(a),
@@ -70,7 +68,7 @@ module dmux8way(a, b, c, d, e, f, g, h, in, sel);
 		.c(c),
 		.d(d));
 
-	dmux4way d3(
+	dmux_4way d3(
 		.in(h2),
 		.sel(sel[1:0]),
 		.a(e),
@@ -80,10 +78,11 @@ module dmux8way(a, b, c, d, e, f, g, h, in, sel);
 
 endmodule
 
-module mux(out, a, b, sel);
-
-	input wire a, b, sel;
-	output wire out;
+module mux(
+	output wire out,
+	input wire a, b,
+	input wire sel
+);
 
 	wire nsel, o1, o2;
 
@@ -96,61 +95,92 @@ module mux(out, a, b, sel);
 
 endmodule
 
-module mux4way(out, a, b, c, d, sel);
+module mux16(
+	output wire [15:0] out,
+	input wire [15:0] a, b,
+	input wire sel
+);
 
-	input wire a, b, c, d;
-	input wire [1:0] sel;
-
-	output wire out;
-
-	wire h1, h2;
-
-	mux m1(h1, a, b, sel[1]);
-	mux m2(h2, c, d, sel[1]);
-
-	mux m3(out, h1, h2, sel[0]);
+	mux m1(out[0], a[0], b[0], sel);
+	mux m2(out[1], a[1], b[1], sel);
+	mux m3(out[2], a[2], b[2], sel);
+	mux m4(out[3], a[3], b[3], sel);
+	mux m5(out[4], a[4], b[4], sel);
+	mux m6(out[5], a[5], b[5], sel);
+	mux m7(out[6], a[6], b[6], sel);
+	mux m8(out[7], a[7], b[7], sel);
+	mux m9(out[8], a[8], b[8], sel);
+	mux m10(out[9], a[9], b[9], sel);
+	mux m11(out[10], a[10], b[10], sel);
+	mux m12(out[11], a[11], b[11], sel);
+	mux m13(out[12], a[12], b[12], sel);
+	mux m14(out[13], a[13], b[13], sel);
+	mux m15(out[14], a[14], b[14], sel);
+	mux m16(out[15], a[15], b[15], sel);
 
 endmodule
 
-module Register16(out, in, load, clk);
+module mux16_4way(
+	output wire [15:0] out,
+	input wire [15:0] a, b, c, d,
+	input wire [1:0] sel
+);
 
-	input wire [15:0] in;
-	input wire load, clk;
+	wire [15:0] h1, h2;
 
-	output wire [15:0] out;
+	mux16 m1(h1, a, b, sel[0]);
+	mux16 m2(h2, c, d, sel[0]);
 
-	reg [15:0] internal;
+	mux16 m3(out, h1, h2, sel[1]);
+
+endmodule
+
+module mux16_8way(
+	output wire [15:0] out,
+	input wire [15:0] a, b, c, d, e, f, g, h,
+	input wire [2:0] sel
+);
+
+	wire [15:0] h1, h2;
+
+	mux16_4way m1(h1, a, b, c, d, sel[2:1]);
+	mux16_4way m2(h2, e, f, g, h, sel[2:1]);
+
+	mux16 m3(out, h1, h2, sel[0]);
+
+endmodule
+
+module Register16(
+	output reg [15:0] out,
+	input wire [15:0] in,
+	input wire load,
+	input wire clk
+);
 
 	always @(posedge clk) begin
-		out <= internal;
-		if(load) begin
-			internal <= in;
-		end
+		if(load)
+			out <= in;
 	end
 
 endmodule
 
 // 8 16-bit registers
-module RAM8(out, in, address, load, clk);
-
-	input wire [15:0] in;
-	input wire load, clk;
-	input wire [2:0] address;
-
-	output wire out;
-
-	// 16-bit registers
-	// reg [15:0] r1, r2, r3, r4, r5, r6, r7, r8;
-
+module RAM8(
+	output wire [15:0] out,
+	input wire [15:0] in,
+	input wire [2:0] address,
+	input wire load,
+	input wire clk
+);
 	// distributed loads
 	wire l1, l2, l3, l4, l5, l6, l7, l8;
 
 	// outputs
-	wire o1, o2, o3, o4, o5, o6, o7, o8;
+	wire [15:0] o1, o2, o3, o4, o5, o6, o7, o8;
 
 	// distribute load
 	// dmux 8 way
-	dmux8way distribute(	
+	dmux_8way distribute(	
 		.in(load),
 		.sel(address),
 		.a(l1),
@@ -173,5 +203,16 @@ module RAM8(out, in, address, load, clk);
 	Register16 r8(o8, in, l8, clk);
 
 	// select output and connect it with output
+	mux16_8way select(
+		.out(out),
+		.sel(address),
+		.a(o1),
+		.b(o2),
+		.c(o3),
+		.d(o4),
+		.e(o5),
+		.f(o6),
+		.g(o7),
+		.h(o8));
 
 endmodule

@@ -88,8 +88,9 @@ void cycle(const std::unique_ptr<VerilatedVcdC> &trace, const std::unique_ptr<VR
 
 I was then ready to create waveform data by tracing the module, which I then visualized using [gtkwave](https://github.com/gtkwave/gtkwave).
 
-Here are the results (*I wasn't too worried aboutt time units for this simulation)
+Here are the results (*I wasn't too worried about time units for this simulation)
 
+![Visualization of ram testing waveform data](test_screenshot.png)
 
 
 

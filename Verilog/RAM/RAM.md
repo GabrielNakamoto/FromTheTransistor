@@ -49,3 +49,48 @@ output of the register corresponding to the provided address
 </p>
 
 ![Diagram of 8 x 16 bit register ram module](ram.png)
+
+## Testing
+
+For verilog compilation I have been using [verilator](https://github.com/verilator/verilator).
+
+This had an added benefit with their support for C++ testing which I enjoyed quite a bit!
+
+To test the RAM I put together a map of addresses, inputs and loads
+
+```cpp
+static const std::vector<std::tuple<uint16_t, uint16_t, unsigned int>> operations = {
+// address, input, load
+	{3, 	12, 	1},
+	{3, 	-35, 	1},
+	{3, 	0, 	0},
+	{7, 	2360, 	1},
+	{0, 	12, 	0},
+	{0, 	15, 	1},
+	{7, 	0, 	0}
+};
+```
+
+along with a clock cycle function that toggles the clock bit twice, valuating the module each time, as well as updating
+simulation time (dt is the running time)
+
+```cpp
+void cycle(const std::unique_ptr<VerilatedVcdC> &trace, const std::unique_ptr<VRAM8> &top)
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		top->clk = !top->clk;
+		top->eval();
+		trace->dump(dt++);
+	}
+}
+```
+
+I was then ready to create waveform data by tracing the module, which I then visualized using [gtkwave](https://github.com/gtkwave/gtkwave).
+
+Here are the results (*I wasn't too worried about time units for this simulation)
+
+![Visualization of ram testing waveform data](test_screenshot.png)
+
+
+

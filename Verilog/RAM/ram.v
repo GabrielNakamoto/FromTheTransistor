@@ -143,10 +143,10 @@ module mux16_8way(
 
 	wire [15:0] h1, h2;
 
-	mux16_4way m1(h1, a, b, c, d, sel[2:1]);
-	mux16_4way m2(h2, e, f, g, h, sel[2:1]);
+	mux16_4way m1(h1, a, b, c, d, sel[1:0]);
+	mux16_4way m2(h2, e, f, g, h, sel[1:0]);
 
-	mux16 m3(out, h1, h2, sel[0]);
+	mux16 m3(out, h1, h2, sel[2]);
 
 endmodule
 

@@ -48,7 +48,7 @@ output of the register corresponding to the provided address
 <i>Diagram of my RAM module created by me! using <a href="https://github.com/YosysHQ/yosys">this awesome project</a></i>
 </p>
 
-![Diagram of 8 x 16 bit register ram module](ram.png)
+![Diagram of 8 x 16 bit register ram module](src/ram.png)
 
 ## Testing
 
@@ -90,7 +90,7 @@ I was then ready to create waveform data by tracing the module, which I then vis
 
 Here are the results (*I wasn't too worried about time units for this simulation)
 
-![Visualization of ram testing waveform data](test_screenshot.png)
+![Visualization of ram testing waveform data](src/test_screenshot.png)
 
 
 

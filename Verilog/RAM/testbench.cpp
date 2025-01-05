@@ -8,21 +8,25 @@
 
 static unsigned int dt = 0;
 
-// address, input, load, cycle offset
-static const std::vector<std::tuple<uint16_t, uint16_t, unsigned int, unsigned int>> operations = {
-	{3, 12, 1, 16},
-	{3, 15, 0, 30}
+// address, input, load
+static const std::vector<std::tuple<uint16_t, uint16_t, unsigned int>> operations = {
+	{3, 12, 1},
+	{3, -35, 1},
+	{3, 0, 0},
+	{7, 2360, 1},
+	{0, 12, 0},
+	{0, 15, 1},
+	{7, 0, 0}
 };
 
 
-void cycle(int cycles, const std::unique_ptr<VerilatedVcdC> &trace, const std::unique_ptr<VRAM8> &top)
+void cycle(const std::unique_ptr<VerilatedVcdC> &trace, const std::unique_ptr<VRAM8> &top)
 {
-	for (int i = 0; i < 2 * cycles; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
-		dt++;
 		top->clk = !top->clk;
 		top->eval();
-		trace->dump(dt);
+		trace->dump(dt++);
 	}
 }
 
@@ -41,16 +45,13 @@ int main(int argc, char **argv)
 
 	top->clk = 1;
 
-	for (const auto &[address, input, load, cycles] : operations)
+	for (const auto &[address, input, load] : operations)
 	{
-		std::cout << address << ' ' << input << ' ' << load << ' ' << cycles << '\n';
 		top->address = address;
 		top->in = input;
 		top->load = load;
 
-		top->eval();
-
-		cycle(cycles, trace, top);
+		cycle(trace, top);
 	}
 
 	trace->close();

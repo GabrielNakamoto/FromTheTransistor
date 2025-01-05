@@ -8,15 +8,15 @@
 
 static unsigned int dt = 0;
 
-// address, input, load
 static const std::vector<std::tuple<uint16_t, uint16_t, unsigned int>> operations = {
-	{3, 12, 1},
-	{3, -35, 1},
-	{3, 0, 0},
-	{7, 2360, 1},
-	{0, 12, 0},
-	{0, 15, 1},
-	{7, 0, 0}
+// address, input, load
+	{3, 	12, 	1},
+	{3, 	-35, 	1},
+	{3, 	0, 		0},
+	{7, 	2360, 	1},
+	{0, 	12, 	0},
+	{0, 	15, 	1},
+	{7, 	0, 		0}
 };
 
 
